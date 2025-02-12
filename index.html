@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende Sumas</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', 'Marker Felt', cursive;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffcccb;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        h1 {
+            color: #ff6347;
+        }
+        .sum {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+        .numbers {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        .operation {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            border-bottom: 3px solid #ff6347;
+            margin-bottom: 15px;
+        }
+        .number {
+            font-size: 2em;
+            margin: 2px 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .highlight {
+            color: #ff6347;
+            font-weight: bold;
+        }
+        .buttons {
+            margin: 20px 0;
+        }
+        button {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #ff6347;
+            color: white;
+        }
+        button:hover {
+            background-color: #ff4500;
+        }
+        .feedback {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+        .switch {
+            margin: 10px 0;
+        }
+        .switch label {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        .switch input[type="checkbox"] {
+            display: none;
+        }
+        .switch .slider {
+            width: 40px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .switch .slider:before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            transition: transform 0.2s;
+        }
+        .switch input[type="checkbox"]:checked + .slider {
+            background-color: #ff6347;
+        }
+        .switch input[type="checkbox"]:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        .mode-switch {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .mode-switch label {
+            margin-right: 10px;
+        }
+        .mode-switch input {
+            margin-right: 5px;
+        }
+        .pokemon {
+            margin-top: 20px;
+        }
+        .pokemon img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .pokemon h2 {
+            margin-top: 10px;
+            font-size: 1.5em;
+            color: #ff6347;
+        }
+        button .highlight {
+            color: white;
+        }
+        .highlight-units {
+            color: #2ecc71;  /* Green */
+            font-weight: bold;
+        }
+        
+        .highlight-tens {
+            color: #3498db;  /* Blue */
+            font-weight: bold;
+        }
+        
+        .highlight-hundreds {
+            color: #9b59b6;  /* Purple */
+            font-weight: bold;
+        }
+        
+        .gallery-view {
+            display: none;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .gallery-item {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.1);
+        }
+        
+        .gallery-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+        }
+        
+        .gallery-item p {
+            margin: 5px 0;
+            color: #ff6347;
+            font-weight: bold;
+        }
+        
+        .view-toggle {
+            margin: 10px 0;
+            padding: 10px 20px;
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        
+        .view-toggle:hover {
+            background-color: #ff4500;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+        }
+        
+        .modal-content {
+            position: relative;
+            margin: auto;
+            margin-top: 50px;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .modal img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 20px;
+        }
+        
+        .modal p {
+            color: white;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        
+        .captured-container {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        
+        .no-pokemon-message {
+            font-size: 1.5em;
+            color: #ff6347;
+            text-align: center;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <audio id="successSound" src="success.mp3"></audio>
+        <audio id="failureSound" src="failure.mp3"></audio>
+        
+        <button id="viewToggle" class="view-toggle">Ver Pokemons Capturados</button>
+        <h1 id="titleOperation">Aprende Sumas</h1>
+        <div class="sum" id="sum"></div>
+        <div class="buttons" id="buttons"></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="pokemon" id="pokemon" style="display: none;">
+            <img id="pokemonImage" src="" alt="Pokémon">
+            <h2 id="pokemonName"></h2>
+        </div>
+        <div class="switch">
+            <label id="carryLabel" for="carrySwitch">Sin llevada</label>
+            <input type="checkbox" id="carrySwitch">
+            <label class="slider" for="carrySwitch"></label>
+        </div>
+        <div class="switch">
+            <label id="operationLabel" for="operationSwitch">Sumas</label>
+            <input type="checkbox" id="operationSwitch">
+            <label class="slider" for="operationSwitch"></label>
+        </div>
+        <div class="mode-switch">
+            <label>Modo:</label>
+            <input type="radio" id="modeEasy" name="difficulty" value="easy" checked>
+            <label for="modeEasy">Fácil</label>
+            <input type="radio" id="modeMedium" name="difficulty" value="medium">
+            <label for="modeMedium">Medio</label>
+            <input type="radio" id="modeHard" name="difficulty" value="hard">
+            <label for="modeHard">Difícil</label>
+        </div>
+    </div>
+
+    <div id="galleryView" class="container" style="display: none;">
+        <h1>Pokemon Capturados</h1>
+        <div id="capturedPokemon" class="captured-container">
+            <!-- Content will be added dynamically -->
+        </div>
+        <button id="backToGame" class="view-toggle">Volver al Juego</button>
+        <button id="resetProgress" class="view-toggle" style="background-color: #ff4444;">
+            Borrar Pokemon
+        </button>
+    </div>
+
+    <div id="pokemonModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modalImage" src="" alt="Pokémon">
+            <p id="modalName"></p>
+        </div>
+    </div>
+
+    <script>
+        let carryMode = false;
+        let difficultyMode = 'easy';
+        let isSubtraction = false;
+        let capturedPokemon = new Set(
+            JSON.parse(localStorage.getItem('capturedPokemon') || '[]')
+        );
+        const gameView = document.querySelector('.container');
+        const galleryView = document.getElementById('galleryView');
+        const viewToggle = document.getElementById('viewToggle');
+        const modal = document.getElementById('pokemonModal');
+
+        const pokemonImages = ["abomasnow.jpg", "abra.jpg", "absol.jpg", "aerodactyl.jpg", "aggron.jpg", "aipom.jpg", "alakazam.jpg", "altaria.jpg", "ambipom.jpg", "ampharos.jpg", "anorith.jpg", "arbok.jpg", "arcanine.jpg", "ariados.jpg", "armaldo.jpg", "aron.jpg", "articuno.jpg", "azelf.jpg", "azumarill.jpg", "azurill.jpg", "bagon.jpg", "baltoy.jpg", "banette.jpg", "barboach.jpg", "bastiodon.jpg", "bayleef.jpg", "beautifly.jpg", "beedrill.jpg", "beldum.jpg", "bellossom.jpg", "bellsprout.jpg", "bibarel.jpg", "bidoof.jpg", "blastoise.jpg", "blaziken.jpg", "blissey.jpg", "bonsly.jpg", "breloom.jpg", "bronzong.jpg", "bronzor.jpg", "budew.jpg", "buizel.jpg", "bulbasaur.jpg", "buneary.jpg", "burmy.jpg", "butterfree.jpg", "cacnea.jpg", "cacturne.jpg", "camerupt.jpg", "carnivine.jpg", "carvanha.jpg", "cascoon.jpg", "castform.jpg", "caterpie.jpg", "celebi.jpg", "chansey.jpg", "charizard.jpg", "charmander.jpg", "charmeleon.jpg", "chatot.jpg", "cherrim.jpg", "cherubi.jpg", "chikorita.jpg", "chimchar.jpg", "chimecho.jpg", "chinchou.jpg", "chingling.jpg", "clamperl.jpg", "claydol.jpg", "clefable.jpg", "clefairy.jpg", "cleffa.jpg", "cloyster.jpg", "combee.jpg", "combusken.jpg", "corphish.jpg", "corsola.jpg", "cradily.jpg", "cranidos.jpg", "crawdaunt.jpg", "cresselia.jpg", "croagunk.jpg", "crobat.jpg", "croconaw.jpg", "cubone.jpg", "cyndaquil.jpg", "darkrai.jpg", "delcatty.jpg", "delibird.jpg", "deoxys.jpg", "dewgong.jpg", "dialga.jpg", "diglett.jpg", "ditto.jpg", "dodrio.jpg", "doduo.jpg", "donphan.jpg", "dragonair.jpg", "dragonite.jpg", "drapion.jpg", "dratini.jpg", "drifblim.jpg", "drifloon.jpg", "drowzee.jpg", "dugtrio.jpg", "dunsparce.jpg", "dusclops.jpg", "dusknoir.jpg", "duskull.jpg", "dustox.jpg", "eevee.jpg", "ekans.jpg", "electabuzz.jpg", "electivire.jpg", "electrike.jpg", "electrode.jpg", "elekid.jpg", "empoleon.jpg", "entei.jpg", "espeon.jpg", "exeggcute.jpg", "exeggutor.jpg", "exploud.jpg", "farfetchd.jpg", "fearow.jpg", "feebas.jpg", "feraligatr.jpg", "finneon.jpg", "flaaffy.jpg", "flareon.jpg", "floatzel.jpg", "flygon.jpg", "forretress.jpg", "froslass.jpg", "furret.jpg", "gabite.jpg", "gallade.jpg", "garchomp.jpg", "gardevoir.jpg", "gastly.jpg", "gastrodon.jpg", "gengar.jpg", "geodude.jpg", "gible.jpg", "girafarig.jpg", "giratina.jpg", "glaceon.jpg", "glalie.jpg", "glameow.jpg", "gligar.jpg", "gliscor.jpg", "gloom.jpg", "golbat.jpg", "goldeen.jpg", "golduck.jpg", "golem.jpg", "gorebyss.jpg", "granbull.jpg", "graveler.jpg", "grimer.jpg", "grotle.jpg", "groudon.jpg", "grovyle.jpg", "growlithe.jpg", "grumpig.jpg", "gulpin.jpg", "gyarados.jpg", "happiny.jpg", "hariyama.jpg", "haunter.jpg", "heatran.jpg", "heracross.jpg", "hippopotas.jpg", "hippowdon.jpg", "hitmonchan.jpg", "hitmonlee.jpg", "hitmontop.jpg", "ho-oh.jpg", "honchkrow.jpg", "hoothoot.jpg", "hoppip.jpg", "horsea.jpg", "houndoom.jpg", "houndour.jpg", "huntail.jpg", "hypno.jpg", "igglybuff.jpg", "illumise.jpg", "infernape.jpg", "ivysaur.jpg", "jigglypuff.jpg", "jirachi.jpg", "jolteon.jpg", "jumpluff.jpg", "jynx.jpg", "kabuto.jpg", "kabutops.jpg", "kadabra.jpg", "kakuna.jpg", "kangaskhan.jpg", "kecleon.jpg", "kingdra.jpg", "kingler.jpg", "kirlia.jpg", "koffing.jpg", "krabby.jpg", "kricketot.jpg", "kricketune.jpg", "kyogre.jpg", "lairon.jpg", "lanturn.jpg", "lapras.jpg", "larvitar.jpg", "latias.jpg", "latios.jpg", "leafeon.jpg", "ledian.jpg", "ledyba.jpg", "lickilicky.jpg", "lickitung.jpg", "lileep.jpg", "linoone.jpg", "lombre.jpg", "lopunny.jpg", "lotad.jpg", "loudred.jpg", "lucario.jpg", "ludicolo.jpg", "lugia.jpg", "lumineon.jpg", "lunatone.jpg", "luvdisc.jpg", "luxio.jpg", "luxray.jpg", "machamp.jpg", "machoke.jpg", "machop.jpg", "magby.jpg", "magcargo.jpg", "magikarp.jpg", "magmar.jpg", "magmortar.jpg", "magnemite.jpg", "electivire.jpg", "magnezone.jpg", "makuhita.jpg", "mamoswine.jpg", "manaphy.jpg", "manectric.jpg", "mankey.jpg", "mantine.jpg", "mantyke.jpg", "mareep.jpg", "marill.jpg", "marowak.jpg", "marshtomp.jpg", "masquerain.jpg", "mawile.jpg", "medicham.jpg", "meditite.jpg", "meganium.jpg", "meowth.jpg", "mesprit.jpg", "metagross.jpg", "metang.jpg", "metapod.jpg", "mew.jpg", "mewtwo.jpg", "mightyena.jpg", "milotic.jpg", "miltank.jpg", "mime-jr.jpg", "minun.jpg", "misdreavus.jpg", "mismagius.jpg", "moltres.jpg", "monferno.jpg", "mothim.jpg", "mr-mime.jpg", "mudkip.jpg", "muk.jpg", "munchlax.jpg", "murkrow.jpg", "natu.jpg", "nidoking.jpg", "nidoqueen.jpg", "nidoran-f.jpg", "nidoran-m.jpg", "nidorina.jpg", "nidorino.jpg", "nincada.jpg", "ninetales.jpg", "ninjask.jpg", "noctowl.jpg", "nosepass.jpg", "numel.jpg", "nuzleaf.jpg", "octillery.jpg", "oddish.jpg", "omanyte.jpg", "omastar.jpg", "onix.jpg", "pachirisu.jpg", "palkia.jpg", "paras.jpg", "parasect.jpg", "pelipper.jpg", "persian.jpg", "phanpy.jpg", "phione.jpg", "pichu.jpg", "pidgeot.jpg", "pidgeotto.jpg", "pidgey.jpg", "pikachu.jpg", "piloswine.jpg", "pineco.jpg", "pinsir.jpg", "piplup.jpg", "plusle.jpg", "politoed.jpg", "poliwag.jpg", "poliwhirl.jpg", "poliwrath.jpg", "ponyta.jpg", "poochyena.jpg", "porygon-z.jpg", "porygon.jpg", "porygon2.jpg", "primeape.jpg", "prinplup.jpg", "probopass.jpg", "psyduck.jpg", "pupitar.jpg", "purugly.jpg", "quagsire.jpg", "quilava.jpg", "qwilfish.jpg", "raichu.jpg", "raikou.jpg", "ralts.jpg", "rampardos.jpg", "rapidash.jpg", "raticate.jpg", "rattata.jpg", "rayquaza.jpg", "regice.jpg", "regigigas.jpg", "regirock.jpg", "registeel.jpg", "relicanth.jpg", "remoraid.jpg", "rhydon.jpg", "rhyhorn.jpg", "rhyperior.jpg", "riolu.jpg", "roselia.jpg", "roserade.jpg", "rotom.jpg", "sableye.jpg", "salamence.jpg", "sandshrew.jpg", "sandslash.jpg", "sceptile.jpg", "scizor.jpg", "scyther.jpg", "seadra.jpg", "seaking.jpg", "sealeo.jpg", "seedot.jpg", "seel.jpg", "sentret.jpg", "setuid.jpg", "seviper.jpg", "sharpedo.jpg", "shaymin.jpg", "shedinja.jpg", "shelgon.jpg", "shellder.jpg", "shellos.jpg", "shieldon.jpg", "shiftry.jpg", "shinx.jpg", "shroomish.jpg", "shuckle.jpg", "shuppet.jpg", "silcoon.jpg", "skarmory.jpg", "skiploom.jpg", "skitty.jpg", "skorupi.jpg", "skuntank.jpg", "slaking.jpg", "slakoth.jpg", "slowbro.jpg", "slowking.jpg", "slowpoke.jpg", "slugma.jpg", "smeargle.jpg", "smoochum.jpg", "sneasel.jpg", "snorlax.jpg", "snorunt.jpg", "snover.jpg", "snubbull.jpg", "solrock.jpg", "spearow.jpg", "spheal.jpg", "spinarak.jpg", "spinda.jpg", "spiritomb.jpg", "spoink.jpg", "squirtle.jpg", "stantler.jpg", "staraptor.jpg", "staravia.jpg", "starly.jpg", "starmie.jpg", "staryu.jpg", "steelix.jpg", "stunky.jpg", "sudowoodo.jpg", "suicune.jpg", "sunflora.jpg", "sunkern.jpg", "surskit.jpg", "swablu.jpg", "swalot.jpg", "swampert.jpg", "swellow.jpg", "swinub.jpg", "sync.jpg", "taillow.jpg", "tangela.jpg", "tangrowth.jpg", "tauros.jpg", "teddiursa.jpg", "tentacool.jpg", "tentacruel.jpg", "togekiss.jpg", "togepi.jpg", "togetic.jpg", "token.jpg", "torchic.jpg", "torkoal.jpg", "torterra.jpg", "totodile.jpg", "toxicroak.jpg", "trapinch.jpg", "treecko.jpg", "tropius.jpg", "turtwig.jpg", "typhlosion.jpg", "tyranitar.jpg", "tyrogue.jpg", "umbreon.jpg", "unown.jpg", "ursaring.jpg", "uxie.jpg", "vaporeon.jpg", "venomoth.jpg", "venonat.jpg", "venusaur.jpg", "vespiquen.jpg", "vibrava.jpg", "victreebel.jpg", "vigoroth.jpg", "vileplume.jpg", "volbeat.jpg", "voltorb.jpg", "vulpix.jpg", "wailmer.jpg", "wailord.jpg", "walrein.jpg", "wartortle.jpg", "weavile.jpg", "weedle.jpg", "weepinbell.jpg", "weezing.jpg", "whiscash.jpg", "whismur.jpg", "wigglytuff.jpg", "wingull.jpg", "wobbuffet.jpg", "wooper.jpg", "wormadam.jpg", "wurmple.jpg", "wynaut.jpg", "xatu.jpg", "xuid.jpg", "yanma.jpg", "yanmega.jpg", "zangoose.jpg", "zapdos.jpg", "zigzagoon.jpg", "zubat.jpg"];
+                
+        function formatNumber(num, totalDigits) {
+            const numStr = String(num).padStart(totalDigits, ' ');
+            let formatted = '';
+            for (let i = 0; i < numStr.length; i++) {
+                const ch = numStr[i];
+                const position = numStr.length - i - 1; // 0 for units, 1 for tens, 2 for hundreds
+                
+                if (ch === ' ') {
+                    formatted += `<span>&nbsp;</span>`;
+                } else {
+                    let highlightClass = '';
+                    if (position === 0) highlightClass = 'highlight-units';
+                    else if (position === 1) highlightClass = 'highlight-tens';
+                    else if (position === 2) highlightClass = 'highlight-hundreds';
+                    
+                    formatted += `<span class="${highlightClass}">${ch}</span>`;
+                }
+            }
+            return formatted;
+        }
+        
+        function generateProblem() {
+            if (difficultyMode === "easy") {
+                if (!isSubtraction) {
+                    let tens, unitsTop, bottomDigit;
+                    do {
+                        tens = Math.floor(Math.random() * 9) + 1;
+                        unitsTop = Math.floor(Math.random() * 10);
+                        bottomDigit = Math.floor(Math.random() * 9) + 1;
+                    } while(carryMode ? (unitsTop + bottomDigit < 10) : (unitsTop + bottomDigit >= 10));
+                    let top = tens * 10 + unitsTop;
+                    let bottom = bottomDigit;
+                    let sum = top + bottom;
+                    return { top, bottom, result: sum, digitCount: 2 };
+                } else {
+                    let tens, unitsTop, bottomDigit;
+                    do {
+                        tens = Math.floor(Math.random() * 9) + 1;
+                        unitsTop = Math.floor(Math.random() * 10);
+                        bottomDigit = Math.floor(Math.random() * 9) + 1;
+                    } while(carryMode ? (unitsTop >= bottomDigit) : (unitsTop < bottomDigit));
+                    let top = tens * 10 + unitsTop;
+                    let bottom = bottomDigit;
+                    let difference = top - bottom;
+                    return { top, bottom, result: difference, digitCount: 2 };
+                }
+            } else if (difficultyMode === "medium") {
+                if (!isSubtraction) {
+                    let tensTop, unitsTop, tensBottom, unitsBottom;
+                    do {
+                        tensTop = Math.floor(Math.random() * 9) + 1;
+                        unitsTop = Math.floor(Math.random() * 10);
+                        tensBottom = Math.floor(Math.random() * 9) + 1;
+                        unitsBottom = Math.floor(Math.random() * 10);
+                    } while(carryMode ? (unitsTop + unitsBottom < 10) : (unitsTop + unitsBottom >= 10));
+                    let top = tensTop * 10 + unitsTop;
+                    let bottom = tensBottom * 10 + unitsBottom;
+                    let sum = top + bottom;
+                    return { top, bottom, result: sum, digitCount: 2 };
+                } else {
+                    let top, bottom;
+                    do {
+                        let tensTop = Math.floor(Math.random() * 9) + 1;
+                        let unitsTop = Math.floor(Math.random() * 10);
+                        let tensBottom = Math.floor(Math.random() * 9) + 1;
+                        let unitsBottom = Math.floor(Math.random() * 10);
+                        top = tensTop * 10 + unitsTop;
+                        bottom = tensBottom * 10 + unitsBottom;
+                    } while(
+                        bottom >= top ||
+                        (carryMode ? needsBorrow(top, bottom) : !needsBorrow(top, bottom))
+                    );
+                    let difference = top - bottom;
+                    return { top, bottom, result: difference, digitCount: 2 };
+                }
+            } else if (difficultyMode === "hard") {
+                if (!isSubtraction) {
+                    let hundredsTop, tensTop, unitsTop, hundredsBottom, tensBottom, unitsBottom;
+                    do {
+                        hundredsTop = Math.floor(Math.random() * 9) + 1;
+                        tensTop = Math.floor(Math.random() * 10);
+                        unitsTop = Math.floor(Math.random() * 10);
+                        hundredsBottom = Math.floor(Math.random() * 9) + 1;
+                        tensBottom = Math.floor(Math.random() * 10);
+                        unitsBottom = Math.floor(Math.random() * 10);
+                    } while(carryMode ? (unitsTop + unitsBottom < 10) : (unitsTop + unitsBottom >= 10));
+                    let top = hundredsTop * 100 + tensTop * 10 + unitsTop;
+                    let bottom = hundredsBottom * 100 + tensBottom * 10 + unitsBottom;
+                    let sum = top + bottom;
+                    return { top, bottom, result: sum, digitCount: 3 };
+                } else {
+                    let top, bottom;
+                    do {
+                        let hundredsTop = Math.floor(Math.random() * 9) + 1;
+                        let tensTop = Math.floor(Math.random() * 10);
+                        let unitsTop = Math.floor(Math.random() * 10);
+                        let hundredsBottom = Math.floor(Math.random() * 9) + 1;
+                        let tensBottom = Math.floor(Math.random() * 10);
+                        let unitsBottom = Math.floor(Math.random() * 10);
+                        top = hundredsTop * 100 + tensTop * 10 + unitsTop;
+                        bottom = hundredsBottom * 100 + tensBottom * 10 + unitsBottom;
+                    } while(
+                        bottom >= top ||
+                        (carryMode ? needsBorrow(top, bottom) : !needsBorrow(top, bottom))
+                    );
+                    let difference = top - bottom;
+                    return { top, bottom, result: difference, digitCount: 3 };
+                }
+            }
+        }
+        
+        function displaySum(top, bottom, result, baseDigits) {
+            const maxDigits = Math.max(baseDigits, String(result).length);
+            const sumElement = document.getElementById('sum');
+            sumElement.innerHTML = `
+                <div class="numbers">
+                    <div class="operation">
+                        <div class="number">${formatNumber(top, maxDigits)}</div>
+                        <div class="number">${isSubtraction ? '-' : '+'}${formatNumber(bottom, maxDigits)}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function displayButtons(result, baseDigits) {
+            const displayDigits = Math.max(baseDigits, String(result).length);
+            const buttonsContainer = document.getElementById('buttons');
+            buttonsContainer.innerHTML = '';
+            const correctAnswer = result;
+            const answers = [correctAnswer];
+
+            // Generate 3 wrong answers within ±15 of the correct answer
+            while (answers.length < 4) {
+                // Generate a number between -15 and +15, excluding 0
+                let offset = Math.floor(Math.random() * 31) - 15;
+                if (offset === 0) continue;
+                
+                let randomAnswer = correctAnswer + offset;
+                
+                // Ensure the answer has the same number of digits as the largest operand
+                const minValue = Math.pow(10, displayDigits - 1);
+                const maxValue = Math.pow(10, displayDigits) - 1;
+                
+                // Skip if answer is out of valid range or already included
+                if (randomAnswer < minValue || 
+                    randomAnswer > maxValue || 
+                    answers.includes(randomAnswer)) {
+                    continue;
+                }
+                
+                answers.push(randomAnswer);
+            }
+
+            answers.sort(() => Math.random() - 0.5);
+
+            answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.textContent = answer;
+                button.addEventListener('click', () => checkAnswer(answer, correctAnswer));
+                buttonsContainer.appendChild(button);
+            });
+        }
+        
+        function checkAnswer(selectedAnswer, correctAnswer) {
+            const feedback = document.getElementById('feedback');
+            const pokemonSection = document.getElementById('pokemon');
+            const successSound = document.getElementById('successSound');
+            const failureSound = document.getElementById('failureSound');
+            
+            if (selectedAnswer === correctAnswer) {
+                successSound.play();
+                feedback.innerHTML = `
+                    ¡Correcto! 🎉<br>
+                    <span style="font-size: 0.6em; color: #666;">
+                        Haz click en el pokemon para seguir ${isSubtraction ? 'restando' : 'sumando'}
+                    </span>
+                `;
+                feedback.className = 'feedback correct';
+
+                const randomPokemon = pokemonImages[Math.floor(Math.random() * pokemonImages.length)];
+                document.getElementById('pokemonImage').src = "images/" + randomPokemon;
+                document.getElementById('pokemonName').innerText = randomPokemon.split('.')[0];
+                pokemonSection.style.display = 'block';
+                
+                capturedPokemon.add(randomPokemon);
+                localStorage.setItem('capturedPokemon', JSON.stringify([...capturedPokemon]));
+
+                document.getElementById('pokemonImage').addEventListener('click', nextQuestion);
+            } else {
+                failureSound.play();
+                feedback.innerText = 'Incorrecto. Intenta de nuevo.';
+                feedback.className = 'feedback incorrect';
+                pokemonSection.style.display = 'none';
+            }
+        }
+        
+        function nextQuestion() {
+            const { top, bottom, result, digitCount } = generateProblem();
+            displaySum(top, bottom, result, digitCount);
+            displayButtons(result, digitCount);
+            document.getElementById('feedback').innerText = '';
+            document.getElementById('pokemon').style.display = 'none';
+        }
+        
+        function updateCarryLabel() {
+            const label = document.getElementById('carryLabel');
+            label.innerText = carryMode ? "Con llevada" : "Sin llevada";
+        }
+        
+        function needsBorrow(top, bottom) {
+            const topDigits = String(top).padStart(3, '0').split('').map(Number);
+            const bottomDigits = String(bottom).padStart(3, '0').split('').map(Number);
+            
+            for (let i = topDigits.length - 1; i >= 0; i--) {
+                if (topDigits[i] < bottomDigits[i]) return true;
+            }
+            return false;
+        }
+        
+        document.getElementById('operationSwitch').addEventListener('change', function() {
+            isSubtraction = this.checked;
+            document.getElementById('operationLabel').innerText = this.checked ? "Restas" : "Sumas";
+            document.getElementById('titleOperation').innerText = this.checked ? "Aprende Restas" : "Aprende Sumas";
+            updateCarryLabel();
+            nextQuestion();
+        });
+        
+        document.getElementById('carrySwitch').addEventListener('change', function() {
+            carryMode = this.checked;
+            updateCarryLabel();
+            nextQuestion();
+        });
+        
+        document.querySelectorAll('input[name="difficulty"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                difficultyMode = this.value;
+                nextQuestion();
+            });
+        });
+        
+        function toggleView() {
+            const gameView = document.querySelector('.container');
+            const galleryView = document.getElementById('galleryView');
+            const isGalleryView = galleryView.style.display === 'block';
+            
+            if (isGalleryView) {
+                galleryView.style.display = 'none';
+                gameView.style.display = 'block';
+                viewToggle.textContent = 'Ver Pokemon Capturados';
+            } else {
+                updateGallery();
+                galleryView.style.display = 'block';
+                gameView.style.display = 'none';
+                viewToggle.textContent = 'Volver al Juego';
+            }
+        }
+        
+        function updateGallery() {
+            const container = document.getElementById('capturedPokemon');
+            container.innerHTML = '';
+            
+            if (capturedPokemon.size === 0) {
+                container.innerHTML = `
+                    <div class="no-pokemon-message">
+                        ¡No has capturado ningún Pokemon todavía!<br>
+                        ¡Vamos a resolver sumas y restas!
+                    </div>`;
+            } else {
+                capturedPokemon.forEach(pokemon => {
+                    const div = document.createElement('div');
+                    div.className = 'gallery-item';
+                    div.innerHTML = `
+                        <img src="images/${pokemon}" alt="${pokemon.split('.')[0]}">
+                        <p>${pokemon.split('.')[0]}</p>
+                    `;
+                    div.addEventListener('click', () => showPokemonModal(pokemon));
+                    container.appendChild(div);
+                });
+            }
+        }
+        
+        function showPokemonModal(pokemon) {
+            const modalImg = document.getElementById('modalImage');
+            const modalName = document.getElementById('modalName');
+            modalImg.src = `images/${pokemon}`;
+            modalName.textContent = pokemon.split('.')[0];
+            modal.style.display = 'block';
+        }
+        
+        viewToggle.addEventListener('click', toggleView);
+        
+        modal.querySelector('.close-modal').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Add event listener for the back button
+        document.getElementById('backToGame').addEventListener('click', function() {
+            const gameView = document.querySelector('.container');
+            const galleryView = document.getElementById('galleryView');
+            galleryView.style.display = 'none';
+            gameView.style.display = 'block';
+            document.getElementById('viewToggle').textContent = 'Ver Pokemon Capturados';
+        });
+        
+        function resetProgress() {
+            if (confirm('¿Estás seguro que quieres borrar todos tus Pokemon capturados?')) {
+                capturedPokemon.clear();
+                localStorage.removeItem('capturedPokemon');
+                updateGallery();
+            }
+        }
+        
+        // Update the toggleView function
+        function toggleView() {
+            const gameView = document.querySelector('.container');
+            const galleryView = document.getElementById('galleryView');
+            const isGalleryView = galleryView.style.display === 'block';
+            
+            if (isGalleryView) {
+                galleryView.style.display = 'none';
+                gameView.style.display = 'block';
+                viewToggle.textContent = 'Ver Pokemon Capturados';
+            } else {
+                updateGallery();
+                galleryView.style.display = 'block';
+                gameView.style.display = 'none';
+                viewToggle.textContent = 'Volver al Juego';
+            }
+        }
+        
+        // Remove any duplicate button creation code
+        document.getElementById('resetProgress').addEventListener('click', resetProgress);
+        
+        nextQuestion();
+    </script>
+</body>
+</html>
