@@ -23,7 +23,6 @@
             min-height: 600px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
         }
         h1 {
             color: #ff6347;
@@ -245,13 +244,13 @@
         }
         
         .captured-container {
+            flex: 1;
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
             align-items: flex-start;
             padding: 20px;
-            overflow-y: auto;
         }
         
         .no-pokemon-message {
@@ -259,6 +258,11 @@
             color: #ff6347;
             text-align: center;
             margin: 40px 0;
+        }
+        
+        #galleryView {
+            max-height: 100vh;  /* Ensure the gallery doesn't exceed the viewport height */
+            overflow-y: auto;   /* Allow vertical scrolling when content is taller than the container */
         }
     </style>
 </head>
@@ -500,6 +504,11 @@
             const failureSound = document.getElementById('failureSound');
             
             if (selectedAnswer === correctAnswer) {
+                // Disable all answer buttons so they can't be clicked again
+                document.querySelectorAll('#buttons button').forEach(button => {
+                    button.disabled = true;
+                });
+                
                 successSound.play();
                 feedback.innerHTML = `
                     ¡Correcto! 🎉<br>
